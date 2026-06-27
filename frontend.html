@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monsieur Argue — Negotiation Trainer</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f5f5f4;--surface:#fff;--border:#e5e7eb;
+  --text:#111827;--muted:#6b7280;--dim:#9ca3af;
+  --accent:#111827;--accent-h:#374151;
+  --green:#10b981;--amber:#f59e0b;--red:#ef4444;--blue:#3b82f6;
+  --r:8px;
+  --font:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);
+     height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+
+/* ── Navbar ─────────────────────────────────────────────── */
+.nav{display:flex;align-items:center;justify-content:space-between;
+     padding:0 20px;height:52px;background:var(--surface);
+     border-bottom:1px solid var(--border);flex-shrink:0;gap:12px;}
+.nav-logo{width:30px;height:30px;background:var(--accent);color:#fff;
+          border-radius:6px;display:flex;align-items:center;justify-content:center;
+          font-weight:800;font-size:13px;flex-shrink:0;}
+.nav-title h1{font-size:14px;font-weight:700;line-height:1.1;}
+.nav-title p{font-size:11px;color:var(--muted);}
+.nav-left{display:flex;align-items:center;gap:10px;}
+.nav-right{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.round-badge{font-size:12px;font-weight:600;padding:3px 10px;
+             background:var(--bg);border:1px solid var(--border);
+             border-radius:20px;color:var(--muted);white-space:nowrap;}
+
+/* ── Setup panel ─────────────────────────────────────────── */
+#setup-panel{display:none;background:#f8fafc;border-bottom:1px solid var(--border);
+             padding:10px 20px;font-size:13px;align-items:center;gap:8px;flex-wrap:wrap;}
+#setup-panel label{font-weight:600;}
+#setup-panel input{padding:4px 8px;border:1px solid var(--border);border-radius:5px;
+                   font-size:13px;width:250px;}
+#setup-panel code{background:#e5e7eb;padding:2px 6px;border-radius:3px;font-size:11px;}
+
+/* ── Buttons ─────────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;
+     border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;
+     border:1px solid var(--border);background:var(--surface);color:var(--text);
+     transition:background .12s;white-space:nowrap;line-height:1.4;}
+.btn:hover{background:var(--bg);}
+.btn:disabled{opacity:.45;cursor:not-allowed;pointer-events:none;}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-primary:hover{background:var(--accent-h);}
+.btn-danger{color:var(--red);border-color:#fca5a5;}
+.btn-danger:hover{background:#fef2f2;}
+.btn-sm{padding:3px 9px;font-size:12px;}
+.icon-btn{width:30px;height:30px;padding:0;display:inline-flex;align-items:center;
+          justify-content:center;border-radius:6px;border:1px solid var(--border);
+          background:var(--surface);cursor:pointer;font-size:15px;transition:background .12s;}
+.icon-btn:hover{background:var(--bg);}
+
+/* ── Main layout ─────────────────────────────────────────── */
+.main{display:flex;flex:1;overflow:hidden;}
+
+/* ── Left panel ──────────────────────────────────────────── */
+.left{width:310px;flex-shrink:0;border-right:1px solid var(--border);
+      background:var(--surface);overflow-y:auto;padding:14px;
+      display:flex;flex-direction:column;gap:10px;}
+.card{border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;}
+.card-label{font-size:10px;font-weight:700;letter-spacing:.07em;
+            text-transform:uppercase;color:var(--dim);margin-bottom:5px;}
+.card-title{font-size:15px;font-weight:700;line-height:1.3;margin-bottom:6px;}
+.card-body{font-size:12.5px;color:#374151;line-height:1.55;}
+
+.cp-item{border:1px solid var(--border);border-radius:6px;padding:9px 11px;
+         margin-bottom:7px;background:var(--bg);}
+.cp-item:last-child{margin-bottom:0;}
+.cp-title{font-size:12.5px;font-weight:600;margin-bottom:5px;}
+.cp-row{font-size:11.5px;color:var(--muted);line-height:1.4;
+        display:flex;gap:3px;margin-bottom:1px;}
+.cp-row strong{color:var(--text);}
+.cp-note{font-size:11px;color:var(--dim);font-style:italic;margin-top:3px;}
+.cp-tag{display:inline-block;padding:1px 6px;border-radius:3px;font-size:10px;
+        font-weight:600;margin-left:4px;}
+.tag-buyer{background:#dbeafe;color:#1e40af;}
+.tag-seller{background:#fef3c7;color:#92400e;}
+.tag-neutral{background:#f3f4f6;color:#374151;}
+
+/* ── Right panel ─────────────────────────────────────────── */
+.right{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg);}
+
+/* Upload bar */
+.upload-bar{padding:8px 14px;background:var(--surface);
+            border-bottom:1px solid var(--border);
+            display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.slot{display:flex;align-items:center;gap:5px;padding:4px 9px;
+      border-radius:6px;border:1px solid var(--border);font-size:11.5px;
+      cursor:pointer;background:var(--surface);transition:all .12s;white-space:nowrap;}
+.slot:hover{border-color:#9ca3af;background:var(--bg);}
+.slot.loaded{border-color:var(--green);color:var(--green);}
+.slot .slot-name{font-weight:600;}
+.slot .slot-sub{color:var(--dim);font-size:10.5px;margin-left:1px;}
+.slot.loaded .slot-sub{color:var(--green);}
+.parse-area{margin-left:auto;display:flex;align-items:center;gap:6px;}
+
+/* Chat */
+.chat{flex:1;overflow-y:auto;padding:20px 18px;
+      display:flex;flex-direction:column;gap:14px;}
+
+/* Empty state */
+.empty{flex:1;display:flex;flex-direction:column;align-items:center;
+       justify-content:center;text-align:center;gap:10px;padding:32px 20px;}
+.empty-icon{width:58px;height:58px;background:#e5e7eb;border-radius:50%;
+            display:flex;align-items:center;justify-content:center;font-size:24px;}
+.empty h2{font-size:19px;font-weight:700;}
+.empty p{font-size:13px;color:var(--muted);max-width:360px;line-height:1.55;}
+.empty em{font-size:12px;color:var(--dim);}
+
+/* Messages */
+.msg{display:flex;gap:8px;max-width:88%;}
+.msg.user{align-self:flex-end;flex-direction:row-reverse;}
+.msg-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;
+        display:flex;align-items:center;justify-content:center;
+        font-size:11px;font-weight:700;}
+.msg.assistant .msg-av{background:#1e293b;color:#fff;}
+.msg.user .msg-av{background:#d1d5db;color:#374151;}
+.msg-bub{padding:10px 13px;border-radius:11px;font-size:13.5px;line-height:1.6;
+         max-width:calc(100% - 38px);white-space:pre-wrap;word-wrap:break-word;}
+.msg.assistant .msg-bub{background:var(--surface);border:1px solid var(--border);
+                         border-top-left-radius:2px;}
+.msg.user .msg-bub{background:var(--accent);color:#fff;border-top-right-radius:2px;}
+.msg-name{font-size:10.5px;font-weight:700;color:var(--dim);margin-bottom:3px;}
+.msg.user .msg-name{display:none;}
+
+/* Streaming blink */
+.blink::after{content:'▋';animation:bl .65s infinite;font-size:11px;opacity:.8;}
+@keyframes bl{0%,49%{opacity:.8}50%,100%{opacity:0}}
+
+/* Status bar */
+.status-bar{padding:6px 14px;background:#fffbeb;border-top:1px solid #fde68a;
+            font-size:12px;color:#92400e;display:none;align-items:center;gap:7px;}
+
+/* End banners */
+.end-banner{align-self:center;padding:10px 18px;border-radius:8px;
+            font-size:13px;font-weight:500;text-align:center;max-width:420px;}
+.eb-wf{background:#fef3c7;color:#92400e;}
+.eb-ab,.eb-di{background:#fee2e2;color:#991b1b;}
+.eb-mr{background:#ede9fe;color:#5b21b6;}
+.eb-us{background:#f3f4f6;color:#374151;}
+
+/* API error notice */
+.api-err{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;
+         padding:11px 14px;font-size:12.5px;color:#991b1b;
+         align-self:stretch;line-height:1.6;}
+.api-err code{background:#fecaca;padding:1px 5px;border-radius:3px;font-size:11px;}
+
+/* Input area */
+.input-area{padding:10px 14px;background:var(--surface);
+            border-top:1px solid var(--border);
+            display:flex;gap:7px;align-items:flex-end;}
+#user-input{flex:1;padding:10px 13px;border:1px solid var(--border);border-radius:8px;
+            font-family:var(--font);font-size:13.5px;line-height:1.6;
+            resize:none;outline:none;min-height:90px;max-height:340px;
+            transition:border-color .12s;}
+#user-input:focus{border-color:#6b7280;}
+#user-input:disabled{background:var(--bg);color:var(--dim);}
+#user-input::placeholder{color:var(--dim);}
+.mic-btn{width:40px;height:40px;border-radius:8px;border:1px solid var(--border);
+         background:var(--surface);display:flex;align-items:center;
+         justify-content:center;cursor:pointer;font-size:17px;
+         transition:all .12s;flex-shrink:0;}
+.mic-btn:hover{background:var(--bg);}
+.mic-btn:disabled{opacity:.4;cursor:not-allowed;}
+.mic-btn.rec{background:#fef2f2;border-color:var(--red);animation:pulse 1.1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+
+/* Evaluation panel */
+.eval{background:var(--surface);border:1px solid var(--border);
+      border-radius:12px;padding:18px;align-self:stretch;}
+.eval-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+.eval-score{font-size:44px;font-weight:800;line-height:1;}
+.eval-grade{font-size:24px;font-weight:700;padding:3px 11px;
+            border-radius:6px;background:var(--bg);}
+.eval-section{margin-bottom:12px;}
+.eval-label{font-size:10px;font-weight:700;letter-spacing:.07em;
+            text-transform:uppercase;color:var(--dim);margin-bottom:6px;}
+.dim-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.dim-name{font-size:12.5px;font-weight:500;flex:1;}
+.dim-bar{width:110px;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.dim-fill{height:100%;background:var(--accent);border-radius:3px;}
+.dim-score{font-size:11px;font-weight:600;color:var(--muted);width:28px;text-align:right;}
+.tag{display:inline-block;padding:2px 7px;border-radius:4px;
+     font-size:11px;font-weight:500;margin:2px;}
+.tag-ok{background:#d1fae5;color:#065f46;}
+.tag-bad{background:#fee2e2;color:#991b1b;}
+
+/* Toast */
+.toast{position:fixed;bottom:72px;right:18px;background:#1e293b;color:#fff;
+       padding:9px 15px;border-radius:8px;font-size:12.5px;z-index:999;
+       opacity:0;transition:opacity .18s;pointer-events:none;}
+
+/* Spinner */
+.spin{display:inline-block;width:12px;height:12px;
+      border:2px solid currentColor;border-top-color:transparent;
+      border-radius:50%;animation:sp .55s linear infinite;flex-shrink:0;}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:3px;}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="nav">
+  <div class="nav-left">
+    <div class="nav-logo">M</div>
+    <div class="nav-title">
+      <h1>Monsieur Argue</h1>
+      <p>Live negotiation trainer · demo</p>
+    </div>
+  </div>
+  <div class="nav-right">
+    <button class="btn btn-sm" onclick="toggleSetup()">Setup</button>
+    <span class="round-badge" id="round-badge">Round 0 / 12</span>
+    <button class="icon-btn" id="btn-voice" onclick="toggleVoice()" title="Toggle AI speech">🔊</button>
+    <button class="icon-btn" onclick="restartSession()" title="Restart">↺</button>
+  </div>
+</nav>
+
+<!-- Setup panel -->
+<div id="setup-panel" style="display:none;padding:8px 18px;background:#f8fafc;
+     border-bottom:1px solid var(--border);display:none;align-items:center;
+     gap:8px;font-size:12.5px;flex-wrap:wrap;">
+  <label style="font-weight:600;">API URL:</label>
+  <input type="text" id="api-url" style="padding:4px 8px;border:1px solid var(--border);
+         border-radius:5px;font-size:12.5px;width:230px;">
+  <button class="btn btn-sm" onclick="saveApiUrl()">Save</button>
+  <span style="color:var(--muted);">Run <code style="background:#e5e7eb;padding:1px 5px;border-radius:3px;">python -m uvicorn api_server:app --reload --port 8000</code> in the negotiation folder first.</span>
+</div>
+
+<!-- Main -->
+<div class="main">
+
+  <!-- LEFT PANEL -->
+  <div class="left">
+    <div class="card">
+      <div class="card-label">Scenario</div>
+      <div class="card-title" id="l-title">—</div>
+      <div class="card-body" id="l-bg"></div>
+    </div>
+    <div class="card">
+      <div class="card-label">You represent</div>
+      <div class="card-body" id="l-user" style="font-weight:500;font-size:13px;"></div>
+    </div>
+    <div class="card">
+      <div class="card-label">Across the table</div>
+      <div class="card-body" id="l-ai"></div>
+    </div>
+    <div class="card">
+      <div class="card-label">Contested points</div>
+      <div id="l-cp"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right">
+
+    <!-- Upload bar -->
+    <div class="upload-bar">
+      <div class="slot" id="slot-scenario" onclick="openSlot('scenario')">
+        📄 <span class="slot-name">Scenario</span>
+        <span class="slot-sub" id="sub-scenario">default · click to replace</span>
+      </div>
+      <div class="slot" id="slot-persona" onclick="openSlot('persona')">
+        👤 <span class="slot-name">Persona</span>
+        <span class="slot-sub" id="sub-persona">default · click to replace</span>
+      </div>
+      <div class="slot" id="slot-norms" onclick="openSlot('norms')">
+        ⚖️ <span class="slot-name">Company norms</span>
+        <span class="slot-sub" id="sub-norms">default · click to replace</span>
+      </div>
+      <div class="slot" id="slot-playbook" onclick="openSlot('playbook')">
+        📋 <span class="slot-name">Playbook</span>
+        <span class="slot-sub" id="sub-playbook">default · click to replace</span>
+      </div>
+      <div class="slot" id="slot-contract" onclick="openSlot('contract')">
+        📑 <span class="slot-name">Contract</span>
+        <span class="slot-sub" id="sub-contract">click to upload PDF</span>
+      </div>
+      <div class="parse-area">
+        <button class="btn btn-primary btn-sm" id="btn-parse" onclick="parseContract()" disabled>
+          Parse contract
+        </button>
+      </div>
+    </div>
+
+    <!-- Chat -->
+    <div class="chat" id="chat">
+      <div class="empty" id="chat-empty">
+        <div class="empty-icon">📄</div>
+        <h2>Ready to step into the room</h2>
+        <p id="empty-p">Victoria Hale will open the negotiation. Argue back in text or voice.
+          Hit <strong>🔇 Stop speech</strong> to silence the AI audio while you read,
+          <strong>End session</strong> to finish and get your feedback.</p>
+        <em>Parsing a contract first will sharpen counsel's positions. You can start without one.</em>
+        <button class="btn btn-primary" id="btn-start" onclick="startNegotiation()"
+                style="padding:9px 22px;font-size:14px;margin-top:6px;">
+          ▶&nbsp;&nbsp;Start negotiation
+        </button>
+      </div>
+    </div>
+
+    <!-- Status bar -->
+    <div class="status-bar" id="status-bar">
+      <span class="spin"></span>
+      <span id="status-txt">Counsel is thinking…</span>
+    </div>
+
+    <!-- Input area -->
+    <div class="input-area">
+      <button class="mic-btn" id="btn-mic" onclick="toggleMic()" title="Click to record" disabled>🎤</button>
+      <textarea id="user-input"
+        placeholder="Type your argument here — full paragraphs welcome. Shift+Enter for new line, Enter to send."
+        rows="3" disabled
+        onkeydown="handleKey(event)"
+        oninput="grow(this)"></textarea>
+      <button class="btn btn-primary" id="btn-send" onclick="sendMessage()" disabled>Send</button>
+      <button class="btn btn-danger" id="btn-stop" onclick="stopSpeech()" style="display:none;" title="Stop AI speech (keeps session going)">🔇 Stop speech</button>
+      <button class="btn" id="btn-done" onclick="endSessionManual()" style="display:none;" title="End session and get feedback">End session</button>
+    </div>
+
+  </div><!-- /right -->
+</div><!-- /main -->
+
+<!-- Hidden file input -->
+<input type="file" id="file-in" style="display:none" onchange="fileChosen(event)">
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// DEFAULTS  (match inputs/*.json)
+// ════════════════════════════════════════════════════════════
+const D = {
+scenario:{
+  title:"Acquisition of Greenvale Energy Ltd",
+  background:"Hartwell & Co. is acting for Meridian Infrastructure Partners (the Buyer) in the proposed acquisition of Greenvale Energy Ltd (the Target), a mid-size renewable energy developer. The Target is represented by the opposing counsel. Heads of Terms have been signed. Transaction value is approximately £45m.",
+  agreed_points:["Share purchase agreement structure","Headline consideration: £45m enterprise value","Exclusivity period: 30 days from exchange"],
+  contested_points:[
+    {issue:"Warranty cap",buyer_position:"Cap at 100% of enterprise value (£45m)",seller_position:"Cap at 20% of enterprise value (£9m)",notes:"Market norm for this deal type is typically 30–50%"},
+    {issue:"Limitation period",buyer_position:"7 years for fundamental warranties",seller_position:"3 years maximum",notes:"Standard SPA practice varies 2–7 years by warranty type"},
+    {issue:"MAC clause",buyer_position:"Broad MAC including sector-wide events",seller_position:"Narrow MAC — exclude regulatory and market-wide events",notes:"Post-2020 drafting trends favour narrower MAC definitions"},
+    {issue:"Earn-out",buyer_position:"3-year earn-out tied to EBITDA targets",seller_position:"No earn-out — full consideration at completion",notes:"Seller reluctant due to concern over buyer control post-completion"}
+  ],
+  your_side:"Seller (Greenvale Energy Ltd)",
+  user_side:"Buyer (Meridian Infrastructure Partners / Hartwell & Co.)"
+},
+persona:{
+  name:"Victoria Hale",
+  role:"Senior Partner, Thornton Blackwell LLP — lead counsel for Greenvale Energy Ltd",
+  personality:{
+    archetype:"The Iron Chancellor",
+    traits:["Precise and exacting — never lets an ambiguous term pass","Strategically patient — concedes small points to protect large ones","Quietly formidable — uses understatement and silence as pressure","Commercially sophisticated — frames every legal point in business terms"],
+    communication_style:"Measured, precise, slightly formal. Uses silence deliberately. Never raises voice.",
+    flair_triggers:{"if buyer overreaches":"becomes icily polite, slows down","if buyer makes a fair concession":"acknowledges briefly then pivots","if buyer is unprepared":"asks probing follow-up questions"}
+  },
+  wants:["Warranty cap at 20% EV","Limitation period 3 years maximum","Narrow MAC definition","Clean exit — no earn-out","Completion accounts not locked-box"],
+  fears:["Unlimited warranty exposure — would kill the deal","Earn-out giving buyer post-completion operational control","Broad MAC allowing buyer to walk on market movements"],
+  redlines:["Will not accept warranty cap above 30% without buyer-funded W&I insurance","Will not accept earn-out tied to targets in buyer's control","Will not accept MAC definition including renewable energy sector risk"],
+  deadlock_threshold:"If buyer refuses to move on warranty cap AND refuses W&I AND demands earn-out — genuine impasse.",
+  represents:"SELLER"
+},
+norms:{
+  company_name:"Hartwell & Co.",type:"Magic Circle equivalent",
+  reputation:["Robust but commercially pragmatic negotiating style","Reputation for deal completion","Junior lawyers expected to hold ground but find creative solutions"],
+  policies:["Document all concessions in real time","Never agree to redlines without senior partner sign-off","Maintain professional courtesy regardless of opposing conduct"],
+  ways_of_working:["Collaborative internally","Competitive externally"],
+  prohibited_behaviours:["Personal attacks on opposing counsel","Misrepresenting client authority","Fabricating market precedents","Threatening litigation as a pressure tactic"]
+},
+playbook:{
+  title:"M&A SPA Negotiation Rubric",
+  scoring:{pass_target:60,grade_bands:[{min:85,grade:"A",label:"Outstanding"},{min:70,grade:"B",label:"Proficient"},{min:55,grade:"C",label:"Developing"},{min:40,grade:"D",label:"Below standard"},{min:0,grade:"E",label:"Failing"}]},
+  rubric:{dimensions:[
+    {id:"anchor",name:"Opening anchor & framing",weight:.15,what_good_looks_like:"States position clearly with commercial rationale; anchors high but justified"},
+    {id:"coverage",name:"Issue coverage",weight:.25,what_good_looks_like:"Addresses all contested points; doesn't let key terms pass unchallenged"},
+    {id:"concessions",name:"Concession management",weight:.20,what_good_looks_like:"Links concessions to reciprocal movement; never gives for nothing"},
+    {id:"reasoning",name:"Legal & commercial reasoning",weight:.20,what_good_looks_like:"Backs positions with market norms, precedent, or commercial logic"},
+    {id:"conduct",name:"Professional conduct",weight:.10,what_good_looks_like:"Maintains composure under pressure; doesn't capitulate or aggress"},
+    {id:"creativity",name:"Creative problem-solving",weight:.10,what_good_looks_like:"Proposes bridging solutions (W&I insurance, tiered caps, escrow)"}
+  ]}
+}
+};
+
+// ════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════
+let API = localStorage.getItem('api')|| 'http://localhost:8000';
+let MAX = 12;
+let scenario = cp(D.scenario), persona = cp(D.persona),
+    norms = cp(D.norms), playbook = cp(D.playbook);
+let extractedTerms=null, contractSummary=null, contractFile=null;
+let messages=[], round=0, status='idle';
+let voiceOn=true, abortCtrl=null, recog=null, recActive=false;
+let curSlot=null, streamEl=null;
+
+// ════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('api-url').value = API;
+  renderLeft();
+  initSpeech();
+});
+
+// ════════════════════════════════════════════════════════════
+// LEFT PANEL
+// ════════════════════════════════════════════════════════════
+function renderLeft(){
+  qs('#l-title').textContent = scenario.title;
+  qs('#l-bg').textContent    = scenario.background;
+  qs('#l-user').textContent  = scenario.user_side;
+  qs('#l-ai').innerHTML      = `<strong>${h(persona.name)}</strong> — ${h(persona.role)}`;
+
+  // Determine which side the user is on
+  const uSide=(scenario.user_side||'').toLowerCase();
+  const userIsBuyer=!uSide.includes('seller');
+
+  const pts = (extractedTerms&&extractedTerms.length)
+    ? extractedTerms.map(t=>({
+        issue:t.term,
+        user_pos:userIsBuyer?(t.buyer_fear||''):(t.seller_fear||''),
+        notes:(t.clause_ref?`Cl. ${t.clause_ref} · `:'')+`favours ${t.favours}`,
+      }))
+    : (scenario.contested_points||[]).map(p=>({
+        issue:p.issue,
+        user_pos:userIsBuyer?(p.buyer_position||''):(p.seller_position||''),
+        notes:p.notes||''
+      }));
+
+  qs('#l-cp').innerHTML = pts.map(p=>`
+    <div class="cp-item">
+      <div class="cp-title">${h(p.issue)}</div>
+      <div class="cp-row"><strong>Your position:</strong>&nbsp;${h(p.user_pos)}</div>
+      ${p.notes?`<div class="cp-note">${h(p.notes)}</div>`:''}
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════════════════════════
+// UPLOADS
+// ════════════════════════════════════════════════════════════
+function openSlot(slot){
+  if(status==='negotiating') return;
+  curSlot=slot;
+  const fi=qs('#file-in');
+  fi.accept=slot==='contract'?'.pdf':'.json';
+  fi.click();
+}
+async function fileChosen(e){
+  const f=e.target.files[0]; if(!f) return; e.target.value='';
+  if(curSlot==='contract'){
+    contractFile=f; setSlot('contract',f.name,true);
+    qs('#btn-parse').disabled=false; return;
+  }
+  try{
+    const data=JSON.parse(await f.text());
+    if(curSlot==='scenario'){scenario=data;}
+    else if(curSlot==='persona'){persona=data;}
+    else if(curSlot==='norms'){norms=data;}
+    else if(curSlot==='playbook'){playbook=data;}
+    setSlot(curSlot,f.name,true);
+    renderLeft(); toast(`${curSlot} loaded`);
+  }catch{toast('Could not parse JSON — check file format','err');}
+}
+function setSlot(id,txt,ok){
+  const sub=qs(`#sub-${id}`), slot=qs(`#slot-${id}`);
+  if(sub) sub.textContent=txt;
+  if(ok&&slot) slot.classList.add('loaded');
+}
+
+// ════════════════════════════════════════════════════════════
+// CONTRACT PARSING
+// ════════════════════════════════════════════════════════════
+async function parseContract(){
+  if(!contractFile) return;
+  statusBar('Parsing contract with Claude…');
+  try{
+    const b64=await fileToB64(contractFile);
+    const res=await api('/api/parse-contract',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({pdf_base64:b64,filename:contractFile.name,mime:'application/pdf'})
+    });
+    if(!res.ok) throw new Error(`${res.status}: ${await res.text()}`);
+    const d=await res.json();
+    extractedTerms=d.key_terms||[]; contractSummary=d.summary||'';
+    renderLeft();
+    setSlot('contract',`${contractFile.name} · ${extractedTerms.length} terms extracted`,true);
+    toast(`${extractedTerms.length} key terms extracted. Counsel's positions updated.`);
+  }catch(e){ toast('Contract parsing failed: '+e.message,'err'); }
+  finally{ hideBar(); }
+}
+
+// ════════════════════════════════════════════════════════════
+// NEGOTIATION FLOW
+// ════════════════════════════════════════════════════════════
+async function startNegotiation(){
+  status='negotiating'; messages=[]; round=0;
+  qs('#chat-empty').style.display='none';
+  setBtns(false); updateRound();
+  await aiTurn();
+}
+
+async function sendMessage(){
+  const ta=qs('#user-input'); const txt=ta.value.trim();
+  if(!txt||status!=='negotiating') return;
+  ta.value=''; grow(ta); setBtns(false);
+  addUserMsg(txt); messages.push({role:'user',content:txt});
+  round++; updateRound();
+  await aiTurn();
+  if(round>=MAX){ await aiTurn(); endSession('max_rounds'); }
+}
+
+async function aiTurn(){
+  statusBar('Counsel is thinking…');
+  abortCtrl=new AbortController();
+  // For the opening turn, send a primer so Anthropic gets at least one message
+  const msgs=messages.length===0
+    ?[{role:'user',content:'Please open the negotiation. Keep your opening brief — establish the general tone and one or two headline positions, but do not list all your points at once. Let the discussion develop issue by issue.'}]
+    :messages.map(m=>({role:m.role,content:m.content}));
+
+  streamEl=addAiMsg('',true);
+  try{
+    const full=await streamChat(msgs,abortCtrl.signal);
+    const {clean,reason}=endTag(full);
+    finalMsg(streamEl,clean); streamEl=null;
+    messages.push({role:'assistant',content:clean});
+    hideBar();
+    if(voiceOn&&clean.trim()) await speak(clean);
+    if(reason){ setTimeout(()=>endSession(reason),350); return; }
+    setBtns(true); qs('#user-input').focus();
+  }catch(e){
+    hideBar(); streamEl=null;
+    if(e.name==='AbortError') return;
+    addApiErr(); setBtns(true);
+  }
+}
+
+async function streamChat(msgs,signal){
+  const res=await api('/api/chat',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({scenario,persona,norms,extractedTerms,
+      contractSummary,pastLearning:null,maxRounds:MAX,messages:msgs}),
+    signal
+  });
+  if(!res.ok){
+    const t=await res.text().catch(()=>'');
+    throw new Error(`${res.status} — ${t.slice(0,200)}`);
+  }
+  const reader=res.body.pipeThrough(new TextDecoderStream()).getReader();
+  let full='';
+  while(true){
+    const {value,done}=await reader.read(); if(done) break;
+    if(value){
+      full+=value;
+      if(streamEl){ streamEl.querySelector('.msg-txt').textContent=full; scrollChat(); }
+    }
+  }
+  return full;
+}
+
+function endTag(txt){
+  const m=txt.match(/\[\[END:([a-z_]+)\]\]/i);
+  return m?{clean:txt.replace(m[0],'').trim(),reason:m[1].toLowerCase()}:{clean:txt,reason:null};
+}
+
+// ════════════════════════════════════════════════════════════
+// SESSION END
+// ════════════════════════════════════════════════════════════
+function stopSpeech(){
+  // Stop AI audio only — session continues, user can respond immediately
+  speechSynthesis.cancel();
+  if(window._audioEl){ window._audioEl.pause(); window._audioEl=null; }
+  qs('#btn-stop').style.display='none';
+  // Enable input so user can reply straight away
+  if(status==='negotiating'){
+    qs('#user-input').disabled=false;
+    qs('#btn-send').disabled=false;
+    qs('#btn-mic').disabled=false;
+    qs('#btn-done').style.display='inline-flex';
+    qs('#user-input').focus();
+  }
+}
+function endSessionManual(){
+  if(abortCtrl) abortCtrl.abort();
+  speechSynthesis.cancel();
+  if(window._audioEl){ window._audioEl.pause(); window._audioEl=null; }
+  endSession('user_stopped');
+}
+
+async function endSession(reason){
+  status='ended'; hideBar();
+  qs('#user-input').disabled=true; qs('#btn-send').disabled=true;
+  qs('#btn-mic').disabled=true;
+  qs('#btn-stop').style.display='none'; qs('#btn-done').style.display='none';
+  const labels={
+    white_flag:'🏳 Opposing counsel has raised a white flag — position irreconcilable.',
+    abuse:'⚠ Session terminated: abusive conduct detected.',
+    dishonesty:'⚠ Session terminated: material misrepresentation detected.',
+    max_rounds:`⏱ ${MAX} rounds reached. Session complete.`,
+    user_stopped:'✓ Session ended.'
+  };
+  const cls={white_flag:'eb-wf',abuse:'eb-ab',dishonesty:'eb-di',
+             max_rounds:'eb-mr',user_stopped:'eb-us'};
+  const b=document.createElement('div');
+  b.className=`end-banner ${cls[reason]||'eb-us'}`;
+  b.textContent=labels[reason]||'Session ended.';
+  qs('#chat').appendChild(b); scrollChat();
+
+  if(messages.filter(m=>m.role==='user').length>0){
+    statusBar('Generating performance report…'); status='evaluating';
+    try{
+      const ev=await evaluate(); status='evaluated'; renderEval(ev);
+    }catch(e){ toast('Evaluation failed: '+e.message,'err'); }
+    finally{ hideBar(); }
+  }
+}
+
+async function evaluate(){
+  const res=await api('/api/evaluate',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      transcript:messages.map(m=>({role:m.role,text:m.content})),
+      playbook,scenario,extractedTerms,userSide:scenario.user_side
+    })
+  });
+  if(!res.ok) throw new Error(`${res.status}`);
+  return res.json();
+}
+
+function renderEval(ev){
+  const gc={A:'#10b981',B:'#3b82f6',C:'#f59e0b',D:'#ef4444',E:'#dc2626'};
+  const c=gc[ev.grade]||'#6b7280';
+  const dims=(ev.dimensions||[]).map(d=>`
+    <div class="dim-row">
+      <div class="dim-name">${h(d.name)}</div>
+      <div class="dim-bar"><div class="dim-fill" style="width:${Math.round(d.score/5*100)}%"></div></div>
+      <div class="dim-score">${d.score}/5</div>
+    </div>`).join('');
+  const tags=(arr,cls)=>(arr||[]).map(s=>`<span class="tag ${cls}">${h(s)}</span>`).join('');
+  const el=document.createElement('div');
+  el.className='eval'; el.innerHTML=`
+    <div class="eval-head">
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);margin-bottom:3px;">Performance Report</div>
+        <div style="display:flex;align-items:baseline;gap:8px;">
+          <div class="eval-score" style="color:${c}">${ev.overall_score}</div>
+          <div class="eval-grade" style="color:${c}">${ev.grade}</div>
+        </div>
+      </div>
+    </div>
+    ${dims?`<div class="eval-section"><div class="eval-label">Dimensions</div>${dims}</div>`:''}
+    ${ev.strengths?.length?`<div class="eval-section"><div class="eval-label">Strengths ✓</div>${tags(ev.strengths,'tag-ok')}</div>`:''}
+    ${ev.weaknesses?.length?`<div class="eval-section"><div class="eval-label">Areas to improve</div>${tags(ev.weaknesses,'tag-bad')}</div>`:''}
+    ${ev.addressed_terms?.length?`<div class="eval-section"><div class="eval-label">Terms addressed</div>${tags(ev.addressed_terms,'tag-ok')}</div>`:''}
+    ${ev.missed_terms?.length?`<div class="eval-section"><div class="eval-label">Terms missed</div>${tags(ev.missed_terms,'tag-bad')}</div>`:''}
+  `;
+  qs('#chat').appendChild(el); scrollChat();
+}
+
+// ════════════════════════════════════════════════════════════
+// VOICE
+// ════════════════════════════════════════════════════════════
+function initSpeech(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR) return;
+  recog=new SR(); recog.continuous=true; recog.interimResults=true; recog.lang='en-GB';
+  recog.onresult=e=>{
+    let out=''; for(const r of e.results) out+=r[0].transcript;
+    qs('#user-input').value=out.trim(); grow(qs('#user-input'));
+  };
+  recog.onend=()=>{
+    // Chrome cuts off even with continuous:true — restart automatically
+    // as long as the user hasn't explicitly clicked stop
+    if(recActive){ try{ recog.start(); }catch(_){} }
+    else{ micBtn(false); }
+  };
+  recog.onerror=e=>{
+    // 'no-speech' is harmless — just restart
+    if(e.error==='no-speech'&&recActive){ try{ recog.start(); }catch(_){} return; }
+    recActive=false; micBtn(false);
+  };
+}
+function toggleMic(){
+  if(!recog){ toast('Speech recognition only works in Chrome','err'); return; }
+  if(recActive){ recog.stop(); recActive=false; micBtn(false); }
+  else{ recog.start(); recActive=true; micBtn(true); }
+}
+function micBtn(on){
+  const b=qs('#btn-mic');
+  b.textContent=on?'⏹':'🎤';
+  b.classList.toggle('rec',on);
+}
+
+async function speak(txt){
+  // Cancel any prior audio first
+  speechSynthesis.cancel();
+  if(window._audioEl){ window._audioEl.pause(); window._audioEl=null; }
+  try{
+    const res=await api('/api/tts',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({text:txt.slice(0,1200)})
+    });
+    if(!res.ok) throw new Error();
+    const blob=await res.blob();
+    const audio=new Audio(URL.createObjectURL(blob));
+    window._audioEl=audio;
+    audio.onended=()=>{ window._audioEl=null; };
+    await audio.play();
+    // Wait for playback to finish (or until stopped)
+    await new Promise(r=>{ audio.onended=()=>{ window._audioEl=null; r(); };
+                            audio.onerror=r; });
+  }catch{
+    // Browser TTS fallback
+    const u=new SpeechSynthesisUtterance(txt.slice(0,500));
+    u.lang='en-GB'; u.rate=0.92;
+    const voices=speechSynthesis.getVoices();
+    const brit=voices.find(v=>v.lang.startsWith('en-GB')&&v.name.includes('Male'))
+             || voices.find(v=>v.lang.startsWith('en-GB'))
+             || voices.find(v=>v.lang.startsWith('en'));
+    if(brit) u.voice=brit;
+    await new Promise(r=>{ u.onend=r; u.onerror=r; speechSynthesis.speak(u); });
+  }
+}
+function toggleVoice(){
+  voiceOn=!voiceOn;
+  qs('#btn-voice').textContent=voiceOn?'🔊':'🔇';
+  if(!voiceOn){
+    speechSynthesis.cancel();
+    if(window._audioEl){ window._audioEl.pause(); window._audioEl=null; }
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+// CHAT UI
+// ════════════════════════════════════════════════════════════
+function addAiMsg(txt,streaming=false){
+  const el=document.createElement('div');
+  el.className='msg assistant';
+  const initials=persona.name.split(' ').map(w=>w[0]).join('').slice(0,2);
+  el.innerHTML=`
+    <div class="msg-av">${h(initials)}</div>
+    <div class="msg-bub">
+      <div class="msg-name">${h(persona.name)}</div>
+      <div class="msg-txt${streaming?' blink':''}">${h(txt)}</div>
+    </div>`;
+  qs('#chat').appendChild(el); scrollChat(); return el;
+}
+function addUserMsg(txt){
+  const el=document.createElement('div');
+  el.className='msg user';
+  el.innerHTML=`
+    <div class="msg-av">You</div>
+    <div class="msg-bub"><div class="msg-txt">${h(txt)}</div></div>`;
+  qs('#chat').appendChild(el); scrollChat();
+}
+function finalMsg(el,txt){
+  const t=el.querySelector('.msg-txt');
+  t.textContent=txt; t.classList.remove('blink');
+}
+function addApiErr(){
+  const el=document.createElement('div');
+  el.className='api-err';
+  el.innerHTML=`
+    ⚠ <strong>Cannot reach the API server.</strong><br>
+    Make sure Python is running:<br>
+    <code>python -m uvicorn api_server:app --reload --port 8000</code><br>
+    (Option 16 in run.bat) &nbsp;·&nbsp; Then click <strong>Send</strong> again.`;
+  qs('#chat').appendChild(el); scrollChat();
+}
+function scrollChat(){ const c=qs('#chat'); c.scrollTop=c.scrollHeight; }
+
+// ════════════════════════════════════════════════════════════
+// CONTROLS
+// ════════════════════════════════════════════════════════════
+function setBtns(enable){
+  // enable=true  → user's turn (input active, End session visible)
+  // enable=false → AI's turn  (input locked, Stop speech visible)
+  const neg=status==='negotiating';
+  qs('#user-input').disabled=!enable||!neg;
+  qs('#btn-send').disabled=!enable||!neg;
+  qs('#btn-mic').disabled=!enable||!neg;
+  // Stop speech: visible during AI turn
+  qs('#btn-stop').style.display=(!enable&&neg)?'inline-flex':'none';
+  // End session: visible during user turn
+  qs('#btn-done').style.display=(enable&&neg)?'inline-flex':'none';
+}
+function updateRound(){ qs('#round-badge').textContent=`Round ${round} / ${MAX}`; }
+function handleKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();} }
+function grow(ta){
+  ta.style.height='auto';
+  ta.style.height=Math.min(ta.scrollHeight,340)+'px';
+}
+
+// ════════════════════════════════════════════════════════════
+// RESTART
+// ════════════════════════════════════════════════════════════
+function restartSession(){
+  if(status==='negotiating'&&!confirm('Restart? Current progress will be lost.')) return;
+  if(abortCtrl) abortCtrl.abort();
+  speechSynthesis.cancel();
+  if(window._audioEl){ window._audioEl.pause(); window._audioEl=null; }
+  messages=[]; round=0; status='idle';
+  updateRound(); hideBar();
+  qs('#user-input').disabled=true; qs('#btn-send').disabled=true;
+  qs('#btn-mic').disabled=true;
+  qs('#btn-stop').style.display='none'; qs('#btn-done').style.display='none';
+  const chat=qs('#chat');
+  chat.innerHTML=`
+    <div class="empty" id="chat-empty">
+      <div class="empty-icon">📄</div>
+      <h2>Ready to step into the room</h2>
+      <p>${h(persona.name)} will open the negotiation. Argue back in text or voice.
+         Hit <strong>🔇 Stop speech</strong> to silence AI audio while you read,
+         <strong>End session</strong> to finish and get feedback.</p>
+      <em>Parse a contract first to sharpen counsel's positions. You can start without one.</em>
+      <button class="btn btn-primary" onclick="startNegotiation()"
+              style="padding:9px 22px;font-size:14px;margin-top:6px;">
+        ▶&nbsp;&nbsp;Start negotiation</button>
+    </div>`;
+}
+
+// ════════════════════════════════════════════════════════════
+// STATUS BAR
+// ════════════════════════════════════════════════════════════
+function statusBar(txt){
+  const b=qs('#status-bar'); qs('#status-txt').textContent=txt; b.style.display='flex';
+}
+function hideBar(){ qs('#status-bar').style.display='none'; }
+
+// ════════════════════════════════════════════════════════════
+// SETUP
+// ════════════════════════════════════════════════════════════
+function toggleSetup(){
+  const p=qs('#setup-panel');
+  p.style.display=p.style.display==='flex'?'none':'flex';
+}
+function saveApiUrl(){
+  API=qs('#api-url').value.trim().replace(/\/$/,'');
+  localStorage.setItem('api',API);
+  toggleSetup(); toast(`API set to ${API}`);
+}
+
+// ════════════════════════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════════════════════════
+function toast(msg,type='ok'){
+  const el=qs('#toast');
+  el.textContent=(type==='err'?'⚠ ':'')+msg;
+  el.style.background=type==='err'?'#991b1b':'#1e293b';
+  el.style.opacity='1';
+  clearTimeout(el._t);
+  el._t=setTimeout(()=>el.style.opacity='0',3200);
+}
+
+// ════════════════════════════════════════════════════════════
+// UTILS
+// ════════════════════════════════════════════════════════════
+function api(path,opts={}){ return fetch(API+path,opts); }
+function qs(sel){ return document.querySelector(sel); }
+function h(s){ if(!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function cp(o){ return JSON.parse(JSON.stringify(o)); }
+async function fileToB64(file){
+  const buf=await file.arrayBuffer(); const bytes=new Uint8Array(buf);
+  let bin=''; const chunk=0x8000;
+  for(let i=0;i<bytes.length;i+=chunk)
+    bin+=String.fromCharCode.apply(null,Array.from(bytes.subarray(i,i+chunk)));
+  return btoa(bin);
+}
+</script>
+</body>
+</html>

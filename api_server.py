@@ -31,7 +31,7 @@ sys.path.insert(0, _HERE)
 
 from fastapi import FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, Response, StreamingResponse
+from fastapi.responses import FileResponse, JSONResponse, Response, StreamingResponse
 
 from engine import build_system_prompt
 from contract_parser import extract_pdf_text, extract_contract_terms
@@ -542,6 +542,16 @@ def _tts_edge(text: str, voice_cfg: dict) -> Optional[bytes]:
         return asyncio.run(_synthesize())
     except Exception:
         return None
+
+
+# ── Root: serve the self-contained frontend ───────────────────────────────────
+
+@app.get("/")
+async def serve_frontend():
+    path = os.path.join(_HERE, "frontend.html")
+    if not os.path.exists(path):
+        raise HTTPException(404, "frontend.html not found. Place it in the negotiation/ folder.")
+    return FileResponse(path, media_type="text/html")
 
 
 # ── Health check ──────────────────────────────────────────────────────────────

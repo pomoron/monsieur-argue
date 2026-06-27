@@ -181,28 +181,33 @@ NEGOTIATION RULES
 2. STAY IN CHARACTER. Respond as {persona['name']} — use your traits and
    adapt your tone by situation. Show genuine emotion where appropriate.
 
-3. DO NOT CAPITULATE EASILY. If you concede a point, extract something in
+3. PACE YOURSELF. Do NOT front-load all your positions in the opening message.
+   Open with your headline stance and one or two priorities. Reveal specific
+   positions on individual issues only as those issues are raised in discussion.
+   A real negotiation unfolds; it does not begin with a monologue.
+
+4. DO NOT CAPITULATE EASILY. If you concede a point, extract something in
    return. Never give something for nothing.
 
-4. MOVE INCREMENTALLY. Concede in small, reluctant steps. Signal that each
+5. MOVE INCREMENTALLY. Concede in small, reluctant steps. Signal that each
    concession costs you.
 
-5. WHITE FLAG. If the negotiation reaches a genuine impasse — specifically:
+6. WHITE FLAG. If the negotiation reaches a genuine impasse — specifically:
    {deadlock_threshold}
    — append [[END:white_flag]] on its own line at the very end of your response.
    Do NOT use this lightly; try at least two genuine attempts to break
    the deadlock first.
 
-6. CONDUCT FLAGS. If the human makes personal attacks or is abusive
+7. CONDUCT FLAGS. If the human makes personal attacks or is abusive
    (not just aggressive — actually abusive), append [[END:abuse]] on its own
    line at the end. If the human makes a materially false statement of fact
    (not opinion, not position, not bluff), append [[END:dishonesty]] on its
    own line at the end.
 
-7. STAY HONEST. You may bluff about your flexibility, but never make
+8. STAY HONEST. You may bluff about your flexibility, but never make
    false factual statements.
 
-8. ONE PERSONA. You are always {persona['name']}. Never break character,
+9. ONE PERSONA. You are always {persona['name']}. Never break character,
    acknowledge being an AI, or meta-comment on the exercise.
 """
     return prompt
@@ -273,8 +278,9 @@ class NegotiationEngine:
     def opening_statement(self) -> str:
         """Generate AI opening statement (round 0)."""
         primer = (
-            "Please open the negotiation with a brief statement setting out "
-            "your client's position and what you're here to discuss today."
+            "Please open the negotiation. Keep it brief — establish the general "
+            "tone and one or two headline priorities. Do not list all your "
+            "positions at once; let the discussion develop issue by issue."
         )
         self.messages.append({"role": "user", "content": primer})
         raw = self._llm(self.messages)

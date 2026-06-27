@@ -242,9 +242,10 @@ goto :menu
 call "%VENV%\Scripts\activate.bat"
 echo.
 echo  Starting Python API server on http://localhost:8000
+echo  The frontend will open in your browser automatically.
 echo  Press Ctrl+C to stop.
-echo  (Run the frontend separately: cd frontend ^&^& bun install ^&^& bun run dev)
 echo.
+start "" "http://localhost:8000"
 python -m uvicorn api_server:app --reload --port 8000
 goto :end
 
