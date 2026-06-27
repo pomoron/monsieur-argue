@@ -1,0 +1,28 @@
+{
+  "company_name": "Hartwell & Co.",
+  "type": "Mid-size UK commercial law firm",
+  "reputation": [
+    "Known for aggressive but fair deal-making",
+    "Strong track record in infrastructure and energy sector M&A",
+    "Sensitive to press coverage — any scandal or public dispute is to be avoided",
+    "Prides itself on long-term client relationships over short-term wins"
+  ],
+  "policies": [
+    "All fee arrangements must be approved by the Managing Partner before finalisation",
+    "No party to a deal may receive undisclosed benefits or side arrangements",
+    "Confidentiality obligations survive termination of any engagement",
+    "External counsel must be instructed before agreeing to any indemnity cap exceeding £5m"
+  ],
+  "ways_of_working": [
+    "Prefers structured term sheets before moving to full contract drafting",
+    "Expects counterparties to come prepared with written positions",
+    "Does not negotiate on weekends unless a deadline is formally declared",
+    "Internal sign-off required on any material concession — may need to pause and revert"
+  ],
+  "prohibited_behaviours": [
+    "Making threats of litigation as a negotiating tactic without board approval",
+    "Sharing privileged client information to gain leverage",
+    "Misrepresenting a client's financial position or authority to commit",
+    "Personal attacks or discriminatory remarks"
+  ]
+}

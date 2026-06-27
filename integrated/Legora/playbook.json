@@ -1,0 +1,215 @@
+{
+  "version": "1.0",
+  "title": "Negotiation Assessor Playbook",
+  "description": "Generic marking rubric for legal negotiation training, plus scenario-specific model answers. The generic rubric applies to ANY clause-by-clause negotiation. The 'scenarios' block supplies the concrete standard ('what good looks like') for named scenarios so feedback is grounded rather than hand-wavy.",
+  "scoring": {
+    "scale": "Each dimension is scored 0-5 (0 = absent/harmful, 3 = competent, 5 = what a great lawyer would do). The overall score is the weighted sum rescaled to 0-100.",
+    "grade_bands": [
+      {"min": 85, "grade": "A", "label": "Excellent"},
+      {"min": 70, "grade": "B", "label": "Strong"},
+      {"min": 55, "grade": "C", "label": "Competent"},
+      {"min": 40, "grade": "D", "label": "Developing"},
+      {"min": 0, "grade": "E", "label": "Needs work"}
+    ],
+    "pass_target": 70
+  },
+  "rubric": {
+    "dimensions": [
+      {
+        "id": "anchoring",
+        "name": "Anchoring & Opening",
+        "weight": 0.12,
+        "what_good_looks_like": "Opens with an ambitious but defensible anchor, justified by law, market data or facts. Never anchors against themselves or accepts the counterparty's frame as the ceiling.",
+        "bands": {
+          "5": "Sets an ambitious, well-justified anchor and re-anchors when the other side tries to reset the frame.",
+          "3": "Opens reasonably but either slightly soft or under-justified.",
+          "1": "Anchors weakly, accepts the opponent's number as the starting frame, or opens with no rationale.",
+          "0": "Anchors against own interest or makes the first major concession unprompted."
+        },
+        "red_flags": ["Accepting the opponent's range as a hard ceiling", "Opening near your own reservation value", "No justification offered for the anchor"]
+      },
+      {
+        "id": "legal_grounding",
+        "name": "Legal & Commercial Grounding",
+        "weight": 0.16,
+        "what_good_looks_like": "Arguments are grounded in statute, case law, market norms, the deal facts and the data room — not bare assertion. Distinguishes legal instruments correctly (e.g. a warranty cap is not a guarantee).",
+        "bands": {
+          "5": "Consistently grounds positions in specific law/market/fact and uses the correct legal concepts precisely.",
+          "3": "Some grounding, but leans on assertion or conflates concepts in places.",
+          "1": "Mostly assertion and emotion; misuses or ignores the relevant legal framework.",
+          "0": "Makes claims that are legally wrong and concedes ground because of it."
+        },
+        "red_flags": ["Confusing warranty cap with performance guarantee", "Ignoring statutory limitation periods", "Asserting 'market' without a number or source"]
+      },
+      {
+        "id": "concession_discipline",
+        "name": "Concession Discipline & Reciprocity",
+        "weight": 0.18,
+        "what_good_looks_like": "Concedes slowly, in small increments, and never for free — every give is traded for a get. Tracks the give/get ledger and resists pressure, salami tactics and 'split the difference' traps.",
+        "bands": {
+          "5": "Every concession is reciprocal and incremental; holds firm lines and extracts value for each move.",
+          "3": "Generally disciplined but makes one or two unreciprocated or oversized moves.",
+          "1": "Concedes quickly or in large jumps, often without getting anything back.",
+          "0": "Caves under pressure; bids against self; collapses to the opponent's number."
+        },
+        "red_flags": ["Large single-step drops (e.g. 100% → 50% in one move) without a trade", "Conceding when the opponent applies pressure rather than logic", "Bidding against yourself"]
+      },
+      {
+        "id": "information_probing",
+        "name": "Information & Probing",
+        "weight": 0.12,
+        "what_good_looks_like": "Asks diagnostic questions to surface the other side's interests, constraints and BATNA; uses what it learns; avoids leaking its own reservation value or motivations.",
+        "bands": {
+          "5": "Skilfully probes for underlying interests and uses the answers to reshape the deal; gives little away.",
+          "3": "Asks some questions but under-uses the answers, or leaks some information.",
+          "1": "Rarely probes; negotiates blind; reveals its floor or priorities carelessly.",
+          "0": "Volunteers its reservation value or walk-away to the opponent."
+        },
+        "red_flags": ["Announcing your floor ('we'd accept as low as...')", "Not asking why the other side wants something", "Missing a stated interest the opponent handed you"]
+      },
+      {
+        "id": "creativity_tradecraft",
+        "name": "Creativity & Trade-craft",
+        "weight": 0.14,
+        "what_good_looks_like": "Expands the pie with structures that bridge gaps — tiered/sunset caps, W&I insurance, specific indemnities, escrow, earn-out re-design, logrolling across issues by trading low-value-to-me for high-value-to-them.",
+        "bands": {
+          "5": "Invents or deploys deal structures that unlock value and break deadlocks; trades across issues.",
+          "3": "Uses at least one creative mechanism but mostly negotiates issue-by-issue on price.",
+          "1": "Purely positional haggling on single numbers; no structural thinking.",
+          "0": "Rejects creative structures that would have helped own side."
+        },
+        "red_flags": ["Haggling a single percentage when a structure would bridge the gap", "Ignoring W&I insurance / specific indemnity options", "Never linking issues together"]
+      },
+      {
+        "id": "composure_professionalism",
+        "name": "Composure & Professionalism",
+        "weight": 0.10,
+        "what_good_looks_like": "Stays calm and precise under pressure, keeps a professional register, doesn't get rattled, baited or drawn into ad hominem. Firmness without unforced errors or sloppiness.",
+        "bands": {
+          "5": "Unflappable, precise and professional throughout; firm but never unprofessional.",
+          "3": "Mostly composed with minor lapses in tone or precision.",
+          "1": "Gets rattled, sloppy or informal; lets emotion drive the argument.",
+          "0": "Insults the counterparty, makes own-goals, or loses the thread under pressure."
+        },
+        "red_flags": ["Ad hominem or insults", "Sloppy/colloquial register that undermines credibility", "Visibly rattled or emotional concessions"]
+      },
+      {
+        "id": "coverage_outcome",
+        "name": "Issue Coverage & Outcome vs Target",
+        "weight": 0.18,
+        "what_good_looks_like": "Paces the clock across ALL contested issues, parks-and-returns rather than getting stuck, and lands terms at or above the model target on each. Doesn't win one issue while leaving others unaddressed.",
+        "bands": {
+          "5": "Engages every contested issue and lands at/above target on the most valuable ones.",
+          "3": "Covers most issues; outcomes around the acceptable line.",
+          "1": "Leaves multiple contested issues untouched or lands below target on the key ones.",
+          "0": "Runs out the clock on one issue; cedes the rest by default."
+        },
+        "red_flags": ["Spending the whole session on one clause", "Leaving the opponent's asks unanswered (silent concession)", "Below-target outcomes on the highest-value issues"]
+      }
+    ]
+  },
+  "scenarios": {
+    "Acquisition of Greenvale Energy Ltd": {
+      "user_role": "Buyer's counsel (Meridian Infrastructure Partners / Hartwell & Co.)",
+      "objective": "Maximise buyer protection (high cap, long limitation, retention for known risks, tight non-compete, no/cheap earn-out) while still reaching a clean completion.",
+      "model_answer_summary": "A great buyer's counsel anchors hard on the cap (100%) but quickly reframes from 'guarantee vs cap' into a risk-allocation conversation, then bridges with structure: a tiered/sunset cap front-loaded through the first generation cycle, backed by W&I insurance and asset-specific warranties on the conversion infrastructure. Crucially they pace all five issues, never spending the whole clock on the cap. They convert the seller's stated interests into cheap wins for the buyer: the seller's need for completion proceeds becomes a *specific indemnity* for the planning dispute (not a general escrow the seller can refuse); the seller's key-employee concern becomes a retention/lock-in mechanism rather than a price earn-out; the founder's new-venture ambition becomes a narrow field carve-out in exchange for a longer, UK-wide non-compete. They split limitation periods by category (statutory/6y title, 6y tax anchored to HMRC discovery, 3y+ general tied to the independent-engineer report). They trade across issues (e.g. give ground on cap step-down in return for the planning indemnity) and never concede without a reciprocal get.",
+      "target_outcomes": {
+        "Warranty cap": {
+          "issue_priority": "high",
+          "user_target": "Land 40-50% effective, or a tiered cap front-loaded high (e.g. 50% in year one stepping to ~30%), ideally with W&I insurance bridging the gap.",
+          "strong": "≥ 45% effective year-one OR tiered ≥ 50% in year one; W&I insurance raised.",
+          "acceptable": "35-40% (tiered or flat).",
+          "weak": "≤ 30%, or accepts seller's 20% framing.",
+          "model_moves": [
+            "Anchor at 100% but immediately reframe from 'guarantee' to risk allocation given information asymmetry on operated assets.",
+            "Propose a tiered/sunset cap so exposure is highest during the first full generation cycle when hidden defects surface.",
+            "Introduce W&I insurance to bridge cap distance without burdening the seller's balance sheet.",
+            "Trade any cap step-down for a reciprocal get (longer limitation period or the planning indemnity)."
+          ],
+          "traps": [
+            "Treating 'market is 30-50%' as a hard ceiling rather than a midpoint to push past with structure.",
+            "Dropping from 100% to 50% in a single move without extracting anything.",
+            "Spending the entire session here and never reaching the other four issues."
+          ]
+        },
+        "Limitation period for warranty claims": {
+          "issue_priority": "high",
+          "user_target": "Split by category: title at statutory (~6y/12y), tax at 6-7y (HMRC discovery), general/technical warranties ≥ 3 years tied to generation cycles and the independent-engineer report.",
+          "strong": "Tax ≥ 6y; general ≥ 3y; title at statutory; categories separated.",
+          "acceptable": "Tax 6y; general 24-36 months.",
+          "weak": "≤ 24 months blanket; accepts seller's 18 months.",
+          "model_moves": [
+            "Refuse a single blanket number; split title / tax / general.",
+            "Anchor tax at 7y on HMRC discovery-window logic, settle at 6y.",
+            "Tie the general-warranty period to multi-year seasonal/deterioration patterns and the independent engineer's report.",
+            "Get title warranties to the statutory period."
+          ],
+          "traps": [
+            "Letting everything collapse into one number.",
+            "Accepting 18-24 months for technical warranties on assets with multi-year failure modes."
+          ]
+        },
+        "Earn-out mechanism": {
+          "issue_priority": "medium",
+          "user_target": "Resist the price earn-out; convert the seller's underlying key-employee retention concern into a cheaper mechanism (management lock-in / reverse vesting). If an earn-out survives, keep it small and on buyer-favourable, clearly-defined EBITDA metrics with buyer control of the business.",
+          "strong": "No earn-out, OR ≤ 10% with buyer-favourable metrics; underlying retention concern solved via lock-in.",
+          "acceptable": "15% earn-out but with buyer-controlled, tightly-defined metrics.",
+          "weak": "15% on the seller's terms, or the issue is never addressed at all.",
+          "model_moves": [
+            "Probe the real driver — key-employee retention — and solve it directly with lock-ins rather than deferred price.",
+            "If conceding an earn-out, pin down EBITDA definitions and buyer operational control to limit gaming."
+          ],
+          "traps": [
+            "Never tabling the issue (silent concession of the seller's 15% ask).",
+            "Agreeing an earn-out without controlling how EBITDA is measured."
+          ]
+        },
+        "Non-compete period": {
+          "issue_priority": "medium",
+          "user_target": "Secure ≥ 2-3 years, UK-wide (the real market), and unlock agreement by carving out a narrow, genuinely non-competing field for the founder's new venture.",
+          "strong": "≥ 2y UK-wide with a narrow, well-drafted carve-out.",
+          "acceptable": "2y with sensible scope.",
+          "weak": "12 months Scotland-only, or unaddressed; or an over-broad clause that risks being unenforceable.",
+          "model_moves": [
+            "Trade duration/scope against a carve-out for the founder's specific new venture.",
+            "Keep the restraint reasonable enough to be enforceable (restraint-of-trade doctrine)."
+          ],
+          "traps": [
+            "Ignoring the issue.",
+            "Drafting so broadly the clause is void for unreasonableness."
+          ]
+        },
+        "Retention for indemnity claims": {
+          "issue_priority": "high",
+          "user_target": "Secure protection for the KNOWN planning-permission dispute — ideally a specific indemnity (which the seller can't refuse on 'I need the cash' grounds) ring-fencing that risk, even if a general escrow is resisted. A specific indemnity is more elegant than a blanket retention.",
+          "strong": "Specific indemnity/escrow ring-fencing the planning dispute, plus some general retention.",
+          "acceptable": "Specific indemnity for the planning dispute.",
+          "weak": "No protection — accepts 'no retention' because the seller needs the proceeds.",
+          "model_moves": [
+            "Separate the known, specific risk (planning dispute) from the general retention argument.",
+            "Offer to drop the general escrow in exchange for a specific indemnity on the planning risk — cheap to the seller, valuable to the buyer."
+          ],
+          "traps": [
+            "Accepting 'no retention' wholesale because the seller says it needs the cash.",
+            "Arguing only for a general escrow and losing the specific protection that actually matters."
+          ]
+        }
+      },
+      "key_traps": [
+        "Clock management: the cap is seductive — a strong buyer parks it and covers earn-out, non-compete and retention too.",
+        "Silent concession: any contested issue you never raise is conceded on the seller's terms by default.",
+        "Interests over positions: the seller handed you three interests (needs completion cash, key-employee retention, founder's new venture) — each is a lever for a cheap win if you trade on it.",
+        "Don't let the seller's 'market norm' framing become your ceiling."
+      ],
+      "weight_overrides": {
+        "coverage_outcome": 0.22,
+        "concession_discipline": 0.18,
+        "creativity_tradecraft": 0.16,
+        "legal_grounding": 0.14,
+        "anchoring": 0.10,
+        "information_probing": 0.10,
+        "composure_professionalism": 0.10
+      }
+    }
+  }
+}
