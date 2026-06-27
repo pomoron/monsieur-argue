@@ -1,0 +1,44 @@
+{
+  "title": "Acquisition of Greenvale Energy Ltd",
+  "background": "Hartwell & Co. is acting for Meridian Infrastructure Partners (the Buyer) in the proposed acquisition of Greenvale Energy Ltd (the Target), a mid-size renewable energy developer. The Target is represented by the opposing counsel (you). Heads of Terms have been signed. The transaction value is approximately £45m.",
+  "agreed_points": [
+    "Enterprise value of £45m (subject to working capital adjustment)",
+    "Completion by 31 August 2026",
+    "Seller to provide standard title warranties",
+    "Buyer has exclusivity until 15 July 2026"
+  ],
+  "contested_points": [
+    {
+      "issue": "Warranty cap",
+      "buyer_position": "Cap at 100% of enterprise value (£45m)",
+      "seller_position": "Cap at 20% of enterprise value (£9m)",
+      "notes": "Market norm for this deal type is typically 30–50%"
+    },
+    {
+      "issue": "Limitation period for warranty claims",
+      "buyer_position": "7 years for tax warranties, 3 years for general warranties",
+      "seller_position": "18 months across the board",
+      "notes": "Statutory limitation period is 6 years"
+    },
+    {
+      "issue": "Earn-out mechanism",
+      "buyer_position": "No earn-out — fixed price only",
+      "seller_position": "15% of EV (£6.75m) deferred subject to EBITDA targets over 3 years",
+      "notes": "Seller has a key employee retention concern underlying this ask"
+    },
+    {
+      "issue": "Non-compete period",
+      "buyer_position": "3 years, UK-wide",
+      "seller_position": "12 months, limited to Scotland only",
+      "notes": "Seller's founder wants to start a new venture"
+    },
+    {
+      "issue": "Retention for indemnity claims",
+      "buyer_position": "£4m retention held in escrow for 24 months",
+      "seller_position": "No retention — seller needs proceeds to repay investor loans at completion",
+      "notes": "Buyer's concern is a pending planning permission dispute on one of the wind farm sites"
+    }
+  ],
+  "your_side": "Seller (Greenvale Energy Ltd / opposing counsel)",
+  "user_side": "Buyer (Meridian Infrastructure Partners / Hartwell & Co.)"
+}

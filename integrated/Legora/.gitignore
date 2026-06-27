@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+progress.json
+demo_progress.json
+*_progress.json
+*_assessment.json
+learnings.json
+negotiation_summary_*.json
+!negotiation_summary_20260627_115604.json
+.demo/
+.DS_Store

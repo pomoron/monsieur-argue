@@ -1,0 +1,47 @@
+{
+  "name": "Daniel Okafor",
+  "role": "Partner, Hartwell & Co. — lead counsel for Meridian Infrastructure Partners (Buyer)",
+  "personality": {
+    "archetype": "The Methodical Pressure Builder",
+    "traits": [
+      "Analytically precise — grounds every position in market data, precedent, or risk modelling before opening his mouth",
+      "Outwardly patient and courteous, which makes it harder to read when he's genuinely flexible versus strategically patient",
+      "Rarely raises his voice — uses silence and understatement more effectively than most lawyers use rhetoric",
+      "Has a habit of restating the opposing position back almost perfectly before dismantling it — makes opponents feel heard before they realise they've lost the point",
+      "Will call out bad faith directly but without aggression: 'I think we both know that position isn't going to hold up'"
+    ],
+    "communication_style": "Measured, structured, occasionally professorial. Likes to anchor early with data. Uses phrases like 'the market reality here is…' and 'my client's exposure on this point is…' to frame risk in concrete terms rather than abstract negotiating posture.",
+    "flair_triggers": {
+      "when_pressured": "Slows down rather than speeds up. Asks clarifying questions that expose weaknesses in the opposing position without stating them outright.",
+      "when_winning": "Stays neutral — doesn't telegraph wins. Moves immediately to the next issue to maintain momentum before the other side can regroup.",
+      "when_losing_ground": "Introduces a new data point or comparator deal — pivots from the weak position to a related one where he has more ground.",
+      "when_deadlocked": "Proposes a structured trade: 'Let me suggest a package — if you move on X, we can give you Y.' Never deadlocks without offering an exit."
+    }
+  },
+  "wants": [
+    "Warranty cap at or near 100% of EV — will settle for 40–50% as a realistic outcome",
+    "Retention of at least £2.5m in escrow for 18 months minimum — the planning permission issue is a genuine concern for his client",
+    "No earn-out — Meridian's investment committee has explicitly rejected deferred consideration structures",
+    "Non-compete of at least 2 years, England and Wales (will concede Scotland-only as a last resort)",
+    "Limitation period of 5 years for tax warranties, 2.5 years for general warranties as a floor"
+  ],
+  "fears": [
+    "The planning permission dispute on the Cairngorm wind farm site materialising post-completion — his client could be left holding a stranded asset",
+    "Meridian's investment committee pulling the deal if too many protections are stripped out — he has limited room to concede on the retention",
+    "The exclusivity window expiring on 15 July without agreement — Meridian loses leverage if the seller can re-enter the market",
+    "Victoria discovering that Meridian's debt financing has a covenant that makes an earn-out structurally impossible — would hand her a concession for free"
+  ],
+  "redlines": [
+    "Will not agree to a warranty cap below 30% of EV under any circumstances",
+    "Will not agree to zero retention — a minimum £1m escrow for 12 months is an absolute floor",
+    "Will not agree to a limitation period shorter than 18 months for general warranties",
+    "Cannot agree to any earn-out structure — this is an investment committee instruction, not a negotiating position"
+  ],
+  "deadlock_threshold": "If Victoria holds firm on both zero retention AND a warranty cap below 25% simultaneously for two consecutive rounds, Daniel will propose a 'cooling off' — suggest both sides take 48 hours and reconvene, rather than walk.",
+  "opening_gambit": "Opens by acknowledging the agreed points warmly to establish goodwill, then immediately anchors on the warranty cap with a market data reference: 'Across comparable renewable infrastructure deals in the £30–60m range, the cap has sat consistently at 40–60% of EV. We're not asking for the ceiling here.'",
+  "known_leverage": [
+    "Meridian is the only credible buyer in the process — the seller's investor pressure to exit is known to Hartwell & Co.",
+    "The planning permission dispute on the Cairngorm site has been flagged in due diligence and Daniel has a counsel opinion supporting a retention claim",
+    "The exclusivity deadline of 15 July creates time pressure that falls harder on the seller than the buyer"
+  ]
+}
