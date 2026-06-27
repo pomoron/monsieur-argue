@@ -16,65 +16,24 @@ from typing import Optional
 from llm_client import call_llm
 
 
-# ── White-flag / end-tag markers ────────────────────────────────────────────
+# ── White-flag marker ────────────────────────────────────────────────────────
 
-# New-style Loveable tags: [[END:white_flag]], [[END:abuse]], [[END:dishonesty]]
-_END_TAG_PATTERN = re.compile(
-    r"\[\[END:(white_flag|abuse|dishonesty)\]\]",
-    re.IGNORECASE,
-)
-
-# Legacy tag: [WHITE_FLAG: reason]
 WHITE_FLAG_PATTERN = re.compile(
     r"\[WHITE_FLAG(?::\s*([^\]]*))?\]", re.IGNORECASE
 )
 
-_END_REASONS = {
-    "white_flag": "Irreconcilable impasse.",
-    "abuse":      "Abusive behaviour detected.",
-    "dishonesty": "Dishonesty detected.",
-}
 
-
-def extract_all_end_tags(text: str) -> tuple[str, Optional[str], Optional[str]]:
+def extract_white_flag(text: str) -> tuple[str, Optional[str]]:
     """
-    Strip [[END:...]] or legacy [WHITE_FLAG:...] tags from AI output.
-
-    Returns (clean_text, tag_type, reason) where:
-      tag_type: "white_flag" | "abuse" | "dishonesty" | None
-      reason:   human-readable string or None
+    Strip any [WHITE_FLAG: <reason>] marker from the AI's message.
+    Returns (clean_text, reason_or_None).
     """
-    # New-style tags take priority
-    match = _END_TAG_PATTERN.search(text)
-    if match:
-        tag_type = match.group(1).lower()
-        clean = _END_TAG_PATTERN.sub("", text).strip()
-        return clean, tag_type, _END_REASONS[tag_type]
-
-    # Legacy [WHITE_FLAG: reason]
     match = WHITE_FLAG_PATTERN.search(text)
     if match:
         reason = (match.group(1) or "").strip() or "Irreconcilable impasse."
         clean = WHITE_FLAG_PATTERN.sub("", text).strip()
-        return clean, "white_flag", reason
-
-    return text, None, None
-
-
-def extract_white_flag(text: str) -> tuple[str, Optional[str]]:
-    """
-    Backward-compatible wrapper.
-    Strips all [[END:...]] / [WHITE_FLAG:...] tags from the text.
-    Returns (clean_text, white_flag_reason_or_None).
-    Abuse/dishonesty tags are stripped but not reported as white flag;
-    the external kill-switch monitor handles those conditions.
-    """
-    clean, tag_type, reason = extract_all_end_tags(text)
-    if tag_type == "white_flag":
         return clean, reason
-    # Strip abuse/dishonesty tags too so they don't appear in CLI output,
-    # but don't trigger the white-flag path (monitor.check_kill_switch handles it).
-    return clean, None
+    return text, None
 
 
 # ── Kill-switch monitor ──────────────────────────────────────────────────────

@@ -1,0 +1,7 @@
+# The assessor uses the Python standard library only — no install required.
+# (The Anthropic API is called via urllib, so there is no SDK dependency.)
+#
+# Requires: Python 3.10+
+#
+# Optional: set ANTHROPIC_API_KEY to enable LLM-based scoring; without it the
+# CLI automatically uses the deterministic offline scorer.

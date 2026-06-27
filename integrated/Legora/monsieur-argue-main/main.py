@@ -20,14 +20,6 @@ Optional enrichment:
                         (default: PARTY_B = Seller)
     --learnings PATH    past_learnings.json — sharpens AI tactics against trainee weaknesses
 
-Voice mode:
-    --voice             Enable voice I/O (mic input + spoken AI responses via Gemini)
-                        Requires:  pip install sounddevice soundfile numpy
-                        Config:    config.json → "voice" → tts_model, voice_name
-                        Press Enter to stop recording each turn.
-                        Type 'stop' as normal to end the session,
-                        or speak nothing and press Enter — the tool will re-prompt.
-
 In-session commands (type at the prompt):
     stop        — terminate and generate summary
     help        — show in-session commands
@@ -109,8 +101,6 @@ def main():
     parser.add_argument("--rounds",    type=int, default=None,              help="Max rounds")
     parser.add_argument("--output",    default=".",                         help="Directory for summary JSON")
     # Optional enrichment
-    parser.add_argument("--voice",              action="store_true", help="Enable voice I/O (mic + Gemini TTS)")
-    parser.add_argument("--list-audio-devices", action="store_true", help="Print available PortAudio devices and exit")
     parser.add_argument("--contract",  default=None,                        help="Contract PDF to parse")
     parser.add_argument(
         "--ai-side", default=None, choices=["PARTY_A", "PARTY_B"],
@@ -122,21 +112,6 @@ def main():
     )
     parser.add_argument("--learnings", default=None,                        help="Path to past_learnings.json")
     args = parser.parse_args()
-
-    # ── --list-audio-devices: diagnose PortAudio and exit ─────────────────────
-    if args.list_audio_devices:
-        from voice_io import list_audio_devices
-        list_audio_devices()
-        sys.exit(0)
-
-    # ── Voice mode: check dependencies early ──────────────────────────────────
-    if args.voice:
-        try:
-            from voice_io import check_voice_deps
-            check_voice_deps()
-        except RuntimeError as e:
-            print(f"{RED}Voice mode unavailable: {e}{RESET}")
-            sys.exit(1)
 
     # ── Load core inputs ───────────────────────────────────────────────────────
     config        = load_json(args.config,   "config.json")
@@ -195,9 +170,6 @@ def main():
     print(f"  Provider:     {config['api_provider'].upper()}")
     print(f"  Contract:     {contract_title or 'None'}")
     print(f"  Learnings:    {'Yes — AI tactics sharpened' if learnings_used else 'None'}")
-    if args.voice:
-        voice_name = config.get("voice", {}).get("voice_name", "Charon")
-        print(f"  Voice mode:   ON  (voice: {voice_name} — press Enter to stop recording)")
     print(f"\n  Type 'stop' at any time to end the session.")
     print(f"{'═' * 70}\n")
     input("Press ENTER to begin...")
@@ -216,11 +188,7 @@ def main():
 
     # ── Opening statement ──────────────────────────────────────────────────────
     print_system("Generating opening statement...", CYAN)
-    opening = engine.opening_statement()
-    print_opening(persona["name"], opening)
-    if args.voice:
-        from voice_io import speak_ai_response
-        speak_ai_response(config, opening)
+    print_opening(persona["name"], engine.opening_statement())
 
     # ── Round loop ─────────────────────────────────────────────────────────────
     termination_reason = None
@@ -228,17 +196,7 @@ def main():
 
     while True:
         try:
-            if args.voice:
-                from voice_io import record_user_input, speak_ai_response
-                print(f"\n{BOLD}You:{RESET} ", end="", flush=True)
-                user_input = record_user_input(config)
-                if not user_input:
-                    print_system("No speech detected — please try again.", YELLOW)
-                    continue
-                # Echo the transcript so the user can confirm what was heard
-                print(f"{DIM}  [Heard: \"{user_input}\"]{RESET}")
-            else:
-                user_input = input(f"\n{BOLD}You:{RESET} ").strip()
+            user_input = input(f"\n{BOLD}You:{RESET} ").strip()
         except (KeyboardInterrupt, EOFError):
             print()
             termination_reason = "USER_STOP"
@@ -271,9 +229,6 @@ def main():
             break
 
         print_ai(persona["name"], result["ai_response"], result["round"], max_rounds)
-        if args.voice:
-            from voice_io import speak_ai_response
-            speak_ai_response(config, result["ai_response"])
 
         if result["status"] == "kill_switch":
             ev = result["kill_switch_event"]

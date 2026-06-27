@@ -1,0 +1,28 @@
+# Virtual environment
+.venv/
+
+# Google Cloud service account keys — never commit these
+service_account_key.json
+*.json.key
+
+# API keys / config with secrets
+# (copy config.json.example and fill in your own keys — don't commit config.json)
+config.json  
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Session outputs (summaries, evaluations, contract extractions)
+negotiation_summary_*.json
+evaluation_*.json
+contract_extraction_*.json
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+*.swp
+
+# # A clone of other's work
+# integrated/Legora/

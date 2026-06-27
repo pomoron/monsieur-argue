@@ -1,0 +1,36 @@
+# Monsieur Argue — negotiation training tool
+# Install: pip install -r requirements.txt
+
+# ── LLM providers (install at least one) ──────────────────────────────────────
+anthropic          # Claude (Anthropic) — set api_provider: "claude" in config.json
+google-generativeai  # Gemini text LLM  — set api_provider: "gemini" in config.json
+
+# ── Voice I/O ──────────────────────────────────────────────────────────────────
+# Required for --voice mode
+pygame                      # Audio playback (bundles SDL2; no PortAudio for output)
+sounddevice                 # Mic recording (needs libportaudio2 — see note below)
+numpy                       # Audio buffer handling
+
+# Google voice stack (primary — uses service account key, no API key needed)
+google-auth                 # Service account authentication
+google-genai                # Gemini STT on Vertex AI
+google-cloud-texttospeech   # Google Cloud TTS — sub-second, Neural2/Studio voices
+
+# Offline fallbacks (no Google auth required)
+edge-tts                    # TTS fallback: Microsoft Edge neural voices
+faster-whisper              # STT fallback: local Whisper, ~39 MB download on first use
+
+# Note on sounddevice / PortAudio (mic only — TTS playback is unaffected):
+#   On most desktop Windows/Linux/macOS, libportaudio2 is pre-installed.
+#   If you get "Error querying device -1":
+#     conda install -c conda-forge portaudio   (no sudo needed)
+#   Confirm: python -c "import sounddevice; print(sounddevice.query_devices())"
+
+# ── Contract parsing (optional) ────────────────────────────────────────────────
+pypdf              # PDF text extraction for --contract mode
+
+# ── Web API server (for the frontend) ──────────────────────────────────────────
+# Starts with: uvicorn api_server:app --reload --port 8000
+fastapi            # API framework
+uvicorn[standard]  # ASGI server
+python-multipart   # multipart/form-data for /api/transcribe file uploads
